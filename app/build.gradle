@@ -47,7 +47,7 @@ dependencies {
 
     // Room (for database)
     implementation libs.androidx.room.runtime
-    kapt libs.androidx.room.runtime
+    kapt libs.androidx.room.compiler
 
     // RecyclerView
     implementation libs.androidx.recyclerview
