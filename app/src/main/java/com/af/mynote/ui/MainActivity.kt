@@ -1,4 +1,4 @@
-package com.af.mynote
+package com.af.mynote.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -6,15 +6,17 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.af.mynote.data.Note
+import com.af.mynote.db.NotesAdapter
+import com.af.mynote.db.NotesDatabase
+import com.af.mynote.listener.NotesListener
+import com.af.mynote.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity(),NotesListener {
+class MainActivity : AppCompatActivity(), NotesListener {
     private var TAG: String = MainActivity::class.java.name
 
     private lateinit var notesRecyclerView: RecyclerView
@@ -57,9 +59,9 @@ class MainActivity : AppCompatActivity(),NotesListener {
     }
 
     override fun onNoteClicked(note: Note, position: Int) {
-
+        Log.d(TAG, "onNoteClicked: position: $position")
         noteClickedPosition = position
-        val intent : Intent  = Intent(applicationContext,CreateNoteActivity::class.java)
+        val intent : Intent  = Intent(applicationContext, CreateNoteActivity::class.java)
         intent.putExtra("isViewOrUpdate",true)
         intent.putExtra("note",note)
         startActivityForResult(intent,REQUEST_CODE_UPDATE_NOTE)
@@ -83,6 +85,8 @@ class MainActivity : AppCompatActivity(),NotesListener {
             @Deprecated("Deprecated in Java")
             override fun onPostExecute(result: List<Note>) {
                 super.onPostExecute(result)
+                Log.d(TAG, "getNotes: onPostExecute : requestCode: $requestCode")
+
                 when(requestCode) {
                     REQUEST_CODE_SHOW_NOTE -> {
                         notesList.addAll(result)
@@ -112,5 +116,19 @@ class MainActivity : AppCompatActivity(),NotesListener {
 
         }
         GetNotesTask().execute()
+    }
+
+    //更新List<Note>,update
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "onActivityResult: requestCode: $requestCode, resultCode: $resultCode")
+        if (requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK) {
+            getNotes(REQUEST_CODE_ADD_NOTE,false)
+        } else if (requestCode == REQUEST_CODE_UPDATE_NOTE && resultCode == RESULT_OK) {
+            if (data != null) {
+                getNotes(REQUEST_CODE_UPDATE_NOTE,data.getBooleanExtra("isNoteDeleted",false))
+            }
+        }
     }
 }

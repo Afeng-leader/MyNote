@@ -1,22 +1,19 @@
-package com.af.mynote
+package com.af.mynote.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import java.lang.CharSequence
-import java.nio.channels.AsynchronousByteChannel
+import com.af.mynote.data.Note
+import com.af.mynote.db.NotesDatabase
+import com.af.mynote.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -52,26 +49,26 @@ class CreateNoteActivity : AppCompatActivity() {
         textDateTime?.text =
             SimpleDateFormat("yyyy年MM月dd日 EEEE a HH:mm", Locale.CHINA).format(Date())
 
-
         //保存笔记按钮
         val imageSave: ImageView = findViewById(R.id.imageSave)
         imageSave.setOnClickListener { saveNote() }
 
-
         if (intent.getBooleanExtra("isViewOrUpdate", false)) {
             alreadyAvailableNote = intent.getSerializableExtra("note") as Note
-//            setViewOrUpdateNote()
+            setViewOrUpdateNote()
         }
 
     }
 
     private fun setViewOrUpdateNote() {
-
+        inputNoteTitle?.setText(alreadyAvailableNote?.title)
+        inputNoteSubtitle?.setText(alreadyAvailableNote?.subTitle)
+        inputNoteText?.setText(alreadyAvailableNote?.noteText)
+        textDateTime?.text = alreadyAvailableNote?.dateTime
     }
 
     // 保存笔记
     private fun saveNote() {
-
         //标题和内容为空时，弹出Toast提醒，并返回空
         if (inputNoteTitle?.text.toString().isEmpty()) {
             Toast.makeText(this, "Note title can't be empty!", Toast.LENGTH_SHORT).show()
@@ -82,7 +79,6 @@ class CreateNoteActivity : AppCompatActivity() {
             Toast.makeText(this, "Note can't be empty!", Toast.LENGTH_SHORT).show()
             return
         }
-
 
         //新建一个note实体，并将笔记内容保存至note
         val note = Note()
@@ -106,7 +102,6 @@ class CreateNoteActivity : AppCompatActivity() {
             @Deprecated("Deprecated in Java")
             override fun onPreExecute() {
                 super.onPreExecute()
-
                 val intent = Intent()
                 setResult(RESULT_OK,intent)
                 finish()
