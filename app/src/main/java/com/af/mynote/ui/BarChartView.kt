@@ -1,4 +1,4 @@
-package com.af.mynote
+package com.af.mynote.ui
 
 import android.animation.ObjectAnimator
 import android.content.Context
@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
+import com.af.mynote.R
 import java.util.*
 
 

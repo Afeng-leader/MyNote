@@ -1,4 +1,4 @@
-package com.af.mynote
+package com.af.mynote.db
 
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.af.mynote.listener.NotesListener
+import com.af.mynote.R
+import com.af.mynote.data.Note
 import com.makeramen.roundedimageview.RoundedImageView
 import java.util.Timer
 
